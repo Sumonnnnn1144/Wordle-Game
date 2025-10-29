@@ -261,7 +261,7 @@ def on_key_press(event):
                 return
             elif current_row == rows - 1:
                 if mode == "blind":
-                    # Reveal all feedback at the end
+                    
                     for i, g in enumerate(guessed_words):
                         colorize_row(i, game.check_guess(g))
                 show_message(f"💀 YOU LOSE!\nWord was: {game.secret}", "red", duration=999999)
