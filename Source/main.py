@@ -3,7 +3,7 @@ from tkinter import messagebox
 import random
 from wordle_core import WordleGame
 
-# Load word lists
+
 import os
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, "allowed.txt"), "r") as f:
@@ -11,7 +11,7 @@ with open(os.path.join(base_path, "allowed.txt"), "r") as f:
 with open(os.path.join(base_path, "secret.txt"), "r") as f:
     secrets = [w.strip().upper() for w in f if len(w.strip()) == 5]
 
-# --- Main window setup ---
+
 root = tk.Tk()
 root.title("Wordle - Tkinter Edition")
 root.configure(bg="white")
@@ -22,21 +22,20 @@ center_x, center_y = int(screen_width / 2 - window_width / 2), int(screen_height
 root.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")
 root.resizable(False, False)
 
-# --- Global state ---
 rows, cols = 6, 5
 cells = []
 current_row = 0
 current_guess = ""
 guessed_words = []
 game = None
-mode = "normal"  # "normal" or "blind"
+mode = "normal"  
 
-# --- Frames ---
+
 menu_frame = tk.Frame(root, bg="white")
 mode_frame = tk.Frame(root, bg="white")
 game_frame = tk.Frame(root, bg="white")
 
-# --- Menu Frame ---
+
 title = tk.Label(menu_frame, text="MENU", font=("Consolas", 36, "bold"), bg="white", fg="black")
 title.pack(pady=100)
 
@@ -48,7 +47,7 @@ exit_btn = tk.Button(menu_frame, text="EXIT", font=("Consolas", 20, "bold"),
                      width=10, bg="#c94f4f", fg="white", command=root.destroy)
 exit_btn.pack(pady=10)
 
-# --- Mode selection Frame ---
+
 mode_title = tk.Label(mode_frame, text="SELECT MODE", font=("Consolas", 28, "bold"), bg="white", fg="black")
 mode_title.pack(pady=80)
 
@@ -64,23 +63,22 @@ back_btn = tk.Button(mode_frame, text="← BACK", font=("Consolas", 16, "bold"),
                      bg="gray", fg="white", command=lambda: show_frame(menu_frame))
 back_btn.pack(pady=40)
 
-# --- Game Frame ---
-# Info button (“i”)
+
 info_btn = tk.Button(game_frame, text="i", font=("Consolas", 14, "bold"),
                      bg="#d3d6da", fg="black", width=2, height=1, command=lambda: show_frame(rule_frame))
 info_btn.place(x=10, y=10)
 
-# Back button in game
+
 back_in_game = tk.Button(game_frame, text="← Back", font=("Consolas", 14, "bold"),
                          bg="gray", fg="white", command=lambda: show_frame(mode_frame))
 back_in_game.place(x=70, y=10)
 
-# Title label
+
 title_label = tk.Label(game_frame, text="WORDLE", font=("Consolas", 28, "bold"),
                        bg="white", fg="black")
 title_label.pack(pady=(60, 10))
 
-# Middle section
+
 center_frame = tk.Frame(game_frame, bg="white")
 center_frame.pack(expand=True, fill="both")
 
@@ -117,7 +115,7 @@ back_from_rule = tk.Button(rule_frame, text="← BACK", font=("Consolas", 16, "b
                            bg="gray", fg="white", command=lambda: show_frame(game_frame))
 back_from_rule.pack(pady=30)
 
-# Create cells
+
 cells = []
 for r in range(rows):
     row_cells = []
@@ -130,12 +128,12 @@ for r in range(rows):
         row_cells.append(label)
     cells.append(row_cells)
 
-# Message label
+
 message_label = tk.Label(center_frame, text="", font=("Consolas", 18, "bold"),
                          bg="white", fg="black")
 message_label.pack(pady=(10, 5))
 
-# Keyboard section
+
 keyboard_frame = tk.Frame(game_frame, bg="white")
 keyboard_frame.pack(side="bottom", pady=(10, 20))
 
@@ -148,7 +146,7 @@ def on_virtual_key_press(letter):
 
 def update_keyboard_colors(guess, feedback):
     if mode == "blind":
-        return  # Don't color keyboard in blind mode
+        return  
     for i, letter in enumerate(guess):
         btn = key_buttons.get(letter)
         if not btn:
@@ -171,7 +169,7 @@ for row in keyboard_rows:
         btn.pack(side="left", padx=3, pady=3)
         key_buttons[letter] = btn
 
-# --- Logic ---
+
 
 def show_frame(frame):
     for f in (menu_frame, mode_frame, game_frame, rule_frame):
@@ -207,13 +205,13 @@ def start_new_game(selected_mode="normal"):
     current_guess = ""
     guessed_words = []
 
-    # Reset board
+
     for r in range(rows):
         for c in range(cols):
             cells[r][c].config(text="", bg="white", fg="black")
     message_label.config(text="")
 
-    # Reset keyboard
+
     for btn in key_buttons.values():
         btn.config(bg="#d3d6da", fg="black")
 
@@ -251,12 +249,12 @@ def on_key_press(event):
             feedback = game.check_guess(guess)
             guessed_words.append(guess)
 
-            # In blind mode, hide feedback until the end
+            
             if mode == "normal":
                 colorize_row(current_row, feedback)
             update_keyboard_colors(guess, feedback)
 
-            # Check win or lose
+           
             if feedback == ["🟩"] * cols:
                 show_message("🎉 YOU WIN!", "green", duration=999999)
                 root.unbind("<Key>")
@@ -272,12 +270,6 @@ def on_key_press(event):
 
             current_row += 1
             current_guess = ""
-
-
-# def show_frame(frame):
-#     for f in (menu_frame, mode_frame, game_frame):
-#         f.pack_forget()
-#     frame.pack(expand=True, fill="both")
 
 
 def show_mode():
