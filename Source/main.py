@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import random
 from wordle_core import WordleGame
 
@@ -66,7 +67,7 @@ back_btn.pack(pady=40)
 # --- Game Frame ---
 # Info button (“i”)
 info_btn = tk.Button(game_frame, text="i", font=("Consolas", 14, "bold"),
-                     bg="#d3d6da", fg="black", width=2, height=1, command=lambda: show_info())
+                     bg="#d3d6da", fg="black", width=2, height=1, command=lambda: show_frame(rule_frame))
 info_btn.place(x=10, y=10)
 
 # Back button in game
@@ -85,6 +86,36 @@ center_frame.pack(expand=True, fill="both")
 
 board_frame = tk.Frame(center_frame, bg="white")
 board_frame.pack(pady=10)
+
+rule_frame = tk.Frame(root, bg="white")
+
+rule_title = tk.Label(rule_frame, text="GAME RULES", font=("Consolas", 28, "bold"), bg="white", fg="black")
+rule_title.pack(pady=40)
+
+rules_text = tk.Text(rule_frame, font=("Consolas", 16), wrap="word", bg="white", fg="black", bd=0, width=60, height=20)
+rules_text.insert("1.0", 
+"""
+🟢 NORMAL MODE:
+- You get color feedback after each guess.
+- [Green] Correct letter in the correct position.
+- [Yellow] Correct letter, wrong position.
+- [Gray] Letter not in the word.
+- You have 6 attempts to guess the secret word.
+
+🟣 BLIND MODE:
+- You do NOT get color feedback after each guess.
+- All feedback will be revealed only after all 6 attempts are used.
+- Plan your guesses carefully; memory and deduction are key.
+- You win if you guess the word before your 6th attempt.
+
+Press ← Back to return to your game.
+""")
+rules_text.config(state="disabled")
+rules_text.pack(padx=20, pady=10)
+
+back_from_rule = tk.Button(rule_frame, text="← BACK", font=("Consolas", 16, "bold"),
+                           bg="gray", fg="white", command=lambda: show_frame(game_frame))
+back_from_rule.pack(pady=30)
 
 # Create cells
 cells = []
@@ -142,22 +173,10 @@ for row in keyboard_rows:
 
 # --- Logic ---
 
-def show_info():
-    if mode == "blind":
-        msg = (
-            "🟣 Blind Mode Rules:\n"
-            "- You won't see any color feedback until all attempts are used.\n"
-            "- Guess wisely! You must rely purely on memory and logic."
-        )
-    else:
-        msg = (
-            "🟢 Normal Mode Rules:\n"
-            "- You get color feedback after each guess.\n"
-            "🟩 correct letter & position\n"
-            "🟨 correct letter, wrong position\n"
-            "⬜ not in word"
-        )
-    tk.messagebox.showinfo("Game Rules", msg)
+def show_frame(frame):
+    for f in (menu_frame, mode_frame, game_frame, rule_frame):
+        f.pack_forget()
+    frame.pack(expand=True, fill="both")
 
 
 def show_message(text, color="black", duration=2000):
@@ -255,10 +274,10 @@ def on_key_press(event):
             current_guess = ""
 
 
-def show_frame(frame):
-    for f in (menu_frame, mode_frame, game_frame):
-        f.pack_forget()
-    frame.pack(expand=True, fill="both")
+# def show_frame(frame):
+#     for f in (menu_frame, mode_frame, game_frame):
+#         f.pack_forget()
+#     frame.pack(expand=True, fill="both")
 
 
 def show_mode():
